@@ -1,6 +1,8 @@
 package services
 
-trait ServicesModule {
+import dao.DaoModule
+
+trait ServicesModule extends DaoModule {
 
   import com.softwaremill.macwire.MacwireMacros._
 
