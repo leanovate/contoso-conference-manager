@@ -9,8 +9,6 @@ import org.apache.kafka.clients.producer.ProducerRecord
 import org.apache.kafka.common.serialization.{ByteArraySerializer, StringSerializer}
 
 class KafkaSink {
-
-  val properties: Map[String, String] = Map()
   implicit val system = ActorSystem("kafka")
   implicit val materializer = ActorMaterializer()
   val producerSettings = ProducerSettings(system, new ByteArraySerializer(), new StringSerializer())
@@ -24,5 +22,4 @@ class KafkaSink {
 
   def apply(str: String) =
     done.offer(str)
-
 }

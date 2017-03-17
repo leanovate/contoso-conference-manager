@@ -6,6 +6,6 @@ trait ServicesModule extends DaoModule {
 
   import com.softwaremill.macwire.MacwireMacros._
 
-  lazy val greetingService = wire[GreetingService]
+  lazy val orderService = wire[OrderService]
 
 }

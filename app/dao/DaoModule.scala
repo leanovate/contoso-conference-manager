@@ -4,5 +4,5 @@ trait DaoModule {
 
   import com.softwaremill.macwire.MacwireMacros._
 
-  lazy val kafkaSink = wire[KafkaSink]
+  lazy val kafkaDao: EventDao = wire[KafkaDao]
 }

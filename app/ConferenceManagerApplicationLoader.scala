@@ -10,13 +10,13 @@ import router.Routes
 /**
  * Application loader that wires up the application dependencies using Macwire
  */
-class GreetingApplicationLoader extends ApplicationLoader {
+class ConferenceManagerApplicationLoader extends ApplicationLoader {
   def load(context: Context): Application = {
-    (new BuiltInComponentsFromContext(context) with GreetingComponents).application
+    (new BuiltInComponentsFromContext(context) with ConferenceManagerComponents).application
   }
 }
 
-trait GreetingComponents extends BuiltInComponents with GreetingModule with I18nComponents {
+trait ConferenceManagerComponents extends BuiltInComponents with ConferenceManagerModule with I18nComponents {
   lazy val assets: Assets = wire[Assets]
   lazy val router: Router = wire[Routes] withPrefix "/"
 }

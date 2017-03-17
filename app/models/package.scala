@@ -2,10 +2,10 @@ import play.api.libs.json.Json
 
 package object models {
 
-  case class Greeting(id: Int = -1, message: String, name: String)
+  case class Order(id: Int = -1, customerId: Int, seats: Int)
 
-  object Greeting {
-    implicit val GreetingFormat = Json.format[Greeting]
+  object Order {
+    implicit val OrderFormat = Json.format[Order]
   }
 
 }
