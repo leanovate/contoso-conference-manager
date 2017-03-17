@@ -1,8 +1,9 @@
 package services
 
 import dao.EventDao
-import models.Order
+import models.{Order, OrderPlaced}
 
-class OrderService(eventDao: EventDao) {
-  def saveNew(order: Order) = eventDao(order.toString)
+class OrderService(eventDao: EventDao[OrderPlaced]) {
+  def saveNew(order: Order) =
+    eventDao.store(OrderPlaced(order))
 }

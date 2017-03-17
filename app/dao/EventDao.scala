@@ -1,46 +1,34 @@
 package dao
 
-import akka.actor.ActorSystem
-import akka.kafka.scaladsl.Consumer.Control
-import akka.kafka.scaladsl.{Consumer, Producer}
-import akka.kafka.{ConsumerSettings, ProducerSettings, Subscriptions}
-import akka.stream.scaladsl.{Sink, Source, SourceQueueWithComplete}
-import akka.stream.{ActorMaterializer, OverflowStrategy}
-import org.apache.kafka.clients.producer.ProducerRecord
-import org.apache.kafka.common.serialization.{ByteArrayDeserializer, ByteArraySerializer, StringDeserializer, StringSerializer}
+import akka.NotUsed
+import akka.stream.{Materializer, OverflowStrategy, QueueOfferResult}
+import akka.stream.scaladsl.{Flow, Keep, Sink, Source, SourceQueueWithComplete}
 import org.reactivestreams.Publisher
+import play.api.libs.json.{Format, JsSuccess, Json}
 
-trait EventDao {
+import scala.concurrent.Future
 
-  val in: SourceQueueWithComplete[String]
+abstract class EventDao[Event](
+    implicit val mat: Materializer,
+    format: Format[Event]) {
 
-  val out: Publisher[String]
-
-
-  def apply(str: String) =
+  def store(str: Event): Future[QueueOfferResult] =
     in.offer(str)
-}
 
-class KafkaDao extends EventDao {
-  implicit val system = ActorSystem("kafka")
-  implicit val materializer = ActorMaterializer()
-  val producerSettings = ProducerSettings(system, new ByteArraySerializer(), new StringSerializer())
-    .withBootstrapServers("localhost:9092")
+  val (
+    in: SourceQueueWithComplete[Event],
+    out: Publisher[Event]
+  ) =
+    Source
+      .queue[Event](3, OverflowStrategy.backpressure)
+      .map(Json.toJson(_))
+      .map(Json.stringify)
+      .via(eventStore)
+      .map(Json.parse)
+      .map(Json.fromJson[Event])
+      .collect { case JsSuccess(event, _) => event }
+      .toMat(Sink.asPublisher(fanout = true))(Keep.both)
+      .run()
 
-  val in: SourceQueueWithComplete[String] = Source.queue[String](3, OverflowStrategy.backpressure)
-    .map { elem =>
-      new ProducerRecord[Array[Byte], String]("helloWorldTopic", elem)
-    }.to(Producer.plainSink(producerSettings)).run()
-
-
-
-  private val consumerSettings = ConsumerSettings(system, new ByteArrayDeserializer, new StringDeserializer)
-    .withBootstrapServers("localhost:9092")
-    .withGroupId("group1")
-
-  val out: Publisher[String] =
-    Consumer
-      .atMostOnceSource(consumerSettings, Subscriptions.topics("helloWorldTopic"))
-      .map(_.value())
-      .runWith(Sink.asPublisher(fanout = true))
+  protected def eventStore: Flow[String, String, NotUsed]
 }
