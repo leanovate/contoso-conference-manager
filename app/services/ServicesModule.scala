@@ -6,8 +6,8 @@ trait ServicesModule extends DaoModule {
 
   import com.softwaremill.macwire.MacwireMacros._
 
-  lazy val orderService = wire[OrderService]
-  val newUserService = wire[NewUserService]
-  val placedOrders = wire[PlacedOrders]
+  lazy val orderService: OrderService = wire[OrderService]
+  val newUserService: NewUserService  = wire[NewUserService]
+  val placedOrders: PlacedOrders      = wire[PlacedOrders]
 
 }
