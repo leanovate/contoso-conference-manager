@@ -1,5 +1,5 @@
 
-import com.softwaremill.macwire.MacwireMacros._
+import com.softwaremill.macwire._
 import controllers.Assets
 import play.api.ApplicationLoader.Context
 import play.api._
@@ -18,5 +18,8 @@ class ConferenceManagerApplicationLoader extends ApplicationLoader {
 
 trait ConferenceManagerComponents extends BuiltInComponents with ConferenceManagerModule with I18nComponents {
   lazy val assets: Assets = wire[Assets]
-  lazy val router: Router = wire[Routes] withPrefix "/"
+  lazy val router: Router = {
+    val prefix = "/"
+    wire[Routes]
+  }
 }

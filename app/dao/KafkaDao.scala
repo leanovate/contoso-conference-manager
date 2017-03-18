@@ -19,7 +19,7 @@ import org.apache.kafka.common.serialization.{
   StringSerializer
 }
 import play.api.libs.json.Format
-import com.softwaremill.macwire.@@
+import com.softwaremill.tagging.@@
 
 class KafkaDao[Event](val topic: String @@ Event)(implicit mat: Materializer,
                       sys: ActorSystem,
