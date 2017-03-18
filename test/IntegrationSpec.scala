@@ -4,7 +4,7 @@ class IntegrationSpec extends Specification {
 
   "Application" should {
 
-    "work from within a browser" in new WithGreetingApplicationBrowser {
+    "work from within a browser" in new MockedApplicationWithBrowser {
 
       browser.goTo("http://localhost:" + port)
 
