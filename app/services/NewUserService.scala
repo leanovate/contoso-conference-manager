@@ -14,6 +14,6 @@ class NewUserService(eventDao: EventDao[OrderPlaced],
     .mapConcat { placing =>
       placing.order.attendees.map(UserRecognized(_))
     }
-    .runForeach(println)
+    .runForeach(users.store(_))
 
 }
