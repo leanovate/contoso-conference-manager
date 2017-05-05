@@ -1,4 +1,4 @@
-name := """macwire-di"""
+name := "contosoe-conference-manager"
 
 version := "1.0-SNAPSHOT"
 
@@ -11,7 +11,8 @@ libraryDependencies ++= Seq(
   specs2                     % Test,
   "com.softwaremill.macwire" %% "macros" % "2.3.0" % "provided",
   "com.softwaremill.macwire" %% "util" % "2.3.0",
-  "com.typesafe.akka"        %% "akka-stream-kafka" % "0.14"
+  "com.typesafe.akka"        %% "akka-stream-kafka" % "0.14",
+  "org.typelevel"            %% "cats" % "0.9.0"
 )
 
 resolvers += "JBoss" at "https://repository.jboss.org/"
